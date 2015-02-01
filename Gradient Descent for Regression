@@ -1,0 +1,47 @@
+function [theta, J_history] = gradientDescent(X, y, theta, alpha, num_iters)
+%GRADIENTDESCENT Performs gradient descent to learn theta
+%   theta = GRADIENTDESENT(X, y, theta, alpha, num_iters) updates theta by 
+%   taking num_iters gradient steps with learning rate alpha
+%   X is the feature of training dataset, y is the output value of training dataset, alpha is learning rate
+%   theta is parameters of regression.
+
+% Initialize some useful values
+m = length(y); % number of training examples
+J_history = zeros(num_iters, 1);
+
+for iter = 1:num_iters
+
+    cost = X*theta;
+    cost = cost - y;
+    cost = X'*cost;
+    delta = cost*alpha/m;
+    theta = theta - delta;
+
+    % Save the cost J in every iteration    
+    J_history(iter) = computeCost(X, y, theta);
+
+end
+
+end
+
+unction J = computeCostMulti(X, y, theta)
+%COMPUTECOSTMULTI Compute cost for linear regression with multiple variables
+%   J = COMPUTECOSTMULTI(X, y, theta) computes the cost of using theta as the
+%   parameter for linear regression to fit the data points in X and y
+
+% Initialize some useful values
+m = length(y); % number of training examples
+
+% You need to return the following variables correctly 
+J = 0;
+
+tmp = X*theta;
+tmp = tmp - y;
+tmp = tmp.*tmp;
+J = sum(tmp(:))/m/2;
+
+
+
+
+end
+
