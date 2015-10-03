@@ -1,0 +1,66 @@
+function g = sigmoid(z)
+%SIGMOID Compute sigmoid functoon
+%   J = SIGMOID(z) computes the sigmoid of z.
+
+g = 1.0 ./ (1.0 + exp(-z));
+end
+
+function [all_theta] = oneVsAll(X, y, num_labels, lambda)
+
+m = size(X, 1);
+n = size(X, 2);
+
+all_theta = zeros(num_labels, n + 1);
+
+X = [ones(m, 1) X];
+
+for c=1:num_labels
+    initial_theta = zeros(n + 1, 1);
+    options = optimset('GradObj', 'on', 'MaxIter', 50);
+    [theta] = ...
+        fmincg(@(t)(lrCostFunction(t, X, (y == c), lambda)), ...
+               initial_theta, options);
+    all_theta(c,:) = theta';
+end
+
+end
+
+
+function p = predictOneVsAll(all_theta, X)
+
+m = size(X, 1);
+num_labels = size(all_theta, 1);
+
+p = zeros(size(X, 1), 1);
+
+% Add ones to the X data matrix
+X = [ones(m, 1) X];
+
+z = X*all_theta';
+h = sigmoid(z);
+[v,p] = max(h,[],2);
+
+end
+
+
+clear ; close all; clc
+
+input_layer_size  = 400;  % 20x20 Input Images of Digits
+num_labels = 10;          % 10 labels, from 1 to 10   
+                          % (note that we have mapped "0" to label 10)
+
+load('ex3data1.mat'); % training data stored in arrays X, y
+m = size(X, 1);
+
+rand_indices = randperm(m);
+sel = X(rand_indices(1:100), :);
+
+lambda = 0.1;
+[all_theta] = oneVsAll(X, y, num_labels, lambda);
+
+fprintf('Program paused. Press enter to continue.\n');
+pause;
+
+pred = predictOneVsAll(all_theta, X);
+
+fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
